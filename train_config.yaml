@@ -9,7 +9,7 @@ trust_remote_code: false
 # Optional: set to a checkpoint folder to resume (e.g. "pretraining/outputs/cpt_run_001/checkpoint-400")
 resume_from_checkpoint: ""
 
-dataset_source: "local"          # "hf" or "local"
+dataset_source: "hf"          # "hf" or "local"
 
 # Hugging Face dataset settings (used when dataset_source=hf)
 hf_dataset_id: "wikitext"

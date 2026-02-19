@@ -1,0 +1,27 @@
+output_jsonl: "data_gathering/am_smoke.jsonl"
+state_db: "data_gathering/state/scraper_state_smoke.db"
+seeds_file: "data_gathering/seeds.txt"
+
+user_agent: "AmharicDataGatherer/1.0 (+https://example.local)"
+request_timeout_seconds: 15
+request_retries: 2
+request_backoff_seconds: 1.0
+verify_ssl: true
+respect_robots_txt: true
+
+min_sentence_chars: 20
+min_ethiopic_ratio: 0.25
+
+max_depth: 2
+max_pages_per_cycle: 200
+max_queue_size: 3000
+crawl_delay_seconds: 1.0
+sleep_between_cycles_seconds: 20
+revisit_after_seconds: 86400
+
+# If true, keep discovered links inside seed domains only.
+same_domain_only: true
+allow_subdomains: true
+
+# Optional explicit allowlist. Leave empty to derive from seeds.
+allowed_domains: []

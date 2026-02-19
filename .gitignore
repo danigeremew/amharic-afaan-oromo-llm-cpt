@@ -34,3 +34,9 @@ logs/
 
 # VS Code
 .vscode/
+
+# Ignore outputs directory
+./outputs
+
+# Ignore all .jsonl files in any subdirectory
+*/*.jsonl
