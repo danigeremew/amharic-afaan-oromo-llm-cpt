@@ -1,0 +1,49 @@
+run_name: "cpt_run_001"
+output_dir: "outputs"
+seed: 42
+
+# Trainable HF checkpoint (not an Ollama model file).
+model_id: "Qwen/Qwen2-0.5B"
+trust_remote_code: false
+
+# Optional: set to a checkpoint folder to resume (e.g. "pretraining/outputs/cpt_run_001/checkpoint-400")
+resume_from_checkpoint: ""
+
+dataset_source: "local"          # "hf" or "local"
+
+# Hugging Face dataset settings (used when dataset_source=hf)
+hf_dataset_id: "wikitext"
+hf_dataset_subset: "wikitext-2-raw-v1"
+hf_split: "train"
+streaming: false
+
+# Text column name in the dataset (HF or local)
+text_column: "text"
+
+# Local dataset settings (used when dataset_source=local)
+local_dataset_path: ""        # file or directory
+local_file_type: "jsonl"      # jsonl|csv|parquet|txt
+
+seq_len: 512
+pack_sequences: true          # packs many short texts into fixed seq_len chunks (non-streaming only)
+num_proc: 1                   # tokenization processes (Windows: keep small)
+
+use_4bit: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target_modules: "q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj"
+
+learning_rate: 2.0e-4
+weight_decay: 0.01
+warmup_ratio: 0.03
+lr_scheduler_type: "cosine"
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+max_steps: 1000
+logging_steps: 10
+save_steps: 200
+save_total_limit: 2
+fp16: true
+bf16: false
+gradient_checkpointing: true
