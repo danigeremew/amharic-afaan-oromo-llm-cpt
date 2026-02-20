@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import inspect
 import os
 import random
 import sys
@@ -260,29 +261,32 @@ def main() -> None:
     max_steps = int(args.max_steps_override) if args.max_steps_override else int(cfg.max_steps)
     report_to: list[str] = ["tensorboard"] if _has_tensorboard() else []
 
-    training_args = transformers.TrainingArguments(
-        output_dir=str(run_out_dir),
-        overwrite_output_dir=False,
-        max_steps=max_steps,
-        per_device_train_batch_size=int(cfg.per_device_train_batch_size),
-        gradient_accumulation_steps=int(cfg.gradient_accumulation_steps),
-        learning_rate=float(cfg.learning_rate),
-        weight_decay=float(cfg.weight_decay),
-        warmup_ratio=float(cfg.warmup_ratio),
-        lr_scheduler_type=str(cfg.lr_scheduler_type),
-        logging_steps=int(cfg.logging_steps),
-        save_steps=int(cfg.save_steps),
-        save_total_limit=int(cfg.save_total_limit),
-        fp16=bool(cfg.fp16),
-        bf16=bool(cfg.bf16),
-        gradient_checkpointing=bool(cfg.gradient_checkpointing),
-        report_to=report_to,
-        logging_dir=str(run_out_dir / "logs"),
-        remove_unused_columns=False,
-        dataloader_num_workers=0,
-        optim="adamw_torch",
-        save_safetensors=True,
-    )
+    training_kwargs: dict[str, Any] = {
+        "output_dir": str(run_out_dir),
+        "overwrite_output_dir": False,
+        "max_steps": max_steps,
+        "per_device_train_batch_size": int(cfg.per_device_train_batch_size),
+        "gradient_accumulation_steps": int(cfg.gradient_accumulation_steps),
+        "learning_rate": float(cfg.learning_rate),
+        "weight_decay": float(cfg.weight_decay),
+        "warmup_ratio": float(cfg.warmup_ratio),
+        "lr_scheduler_type": str(cfg.lr_scheduler_type),
+        "logging_steps": int(cfg.logging_steps),
+        "save_steps": int(cfg.save_steps),
+        "save_total_limit": int(cfg.save_total_limit),
+        "fp16": bool(cfg.fp16),
+        "bf16": bool(cfg.bf16),
+        "gradient_checkpointing": bool(cfg.gradient_checkpointing),
+        "report_to": report_to,
+        "logging_dir": str(run_out_dir / "logs"),
+        "remove_unused_columns": False,
+        "dataloader_num_workers": 0,
+        "optim": "adamw_torch",
+        "save_safetensors": True,
+    }
+    supported_kwargs = set(inspect.signature(transformers.TrainingArguments.__init__).parameters)
+    training_kwargs = {k: v for k, v in training_kwargs.items() if k in supported_kwargs}
+    training_args = transformers.TrainingArguments(**training_kwargs)
 
     trainer = transformers.Trainer(
         model=model,

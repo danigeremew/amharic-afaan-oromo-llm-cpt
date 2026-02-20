@@ -1,10 +1,10 @@
 # Pretraining (CPT)
 
-This folder adds a **continuous pretraining (CPT)** pipeline to the repo. It is separate from the retrieval-only chatbot in `app/`.
+This repo includes a **continuous pretraining (CPT)** pipeline and local inference/export helpers.
 
 ## What you edit
 
-Edit `pretraining/config/train_config.yaml`:
+Edit `train_config.yaml`:
 
 - `model_id`: Hugging Face *trainable* base checkpoint (example: `Qwen/Qwen2-0.5B`)
 - Dataset (Hugging Face):
@@ -50,6 +50,36 @@ python run_cpt.py --config path\to\train_config.yaml
 ```
 
 Outputs are written under `outputs/<run_name>/` and should include LoRA adapter files (not a fully merged model).
+
+## Run inference (adapter)
+
+One prompt:
+
+```powershell
+python infer.py --adapter outputs/cpt_run_001 --base-model Qwen/Qwen2-0.5B --prompt "አማርኛ ስለ ቴክኖሎጂ አጭር ጽሑፍ ጻፍ።"
+```
+
+Interactive chat:
+
+```powershell
+python infer.py --adapter outputs/cpt_run_001 --base-model Qwen/Qwen2-0.5B --interactive
+```
+
+## Export GGUF (optional)
+
+This requires a local `llama.cpp` checkout that has been built.
+
+Export merged FP16 GGUF:
+
+```powershell
+python export_gguf.py --adapter outputs/cpt_run_001 --base-model Qwen/Qwen2-0.5B --llama-cpp-dir C:\path\to\llama.cpp
+```
+
+Export and quantize (example `Q4_K_M`):
+
+```powershell
+python export_gguf.py --adapter outputs/cpt_run_001 --base-model Qwen/Qwen2-0.5B --llama-cpp-dir C:\path\to\llama.cpp --quant Q4_K_M --quant-gguf outputs/gguf/cpt_run_001-q4_k_m.gguf
+```
 
 ## Important limitations
 
